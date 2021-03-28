@@ -1,25 +1,40 @@
-import React from 'react'
-import { Button, ButtonGroup, Card } from 'react-bootstrap'
-import { Activity } from '../../../models/Activity'
+import { observer } from 'mobx-react-lite';
+import React, { useEffect } from 'react'
+import { Button, Card } from 'react-bootstrap'
+import { useParams } from 'react-router-dom';
+import { useStore } from '../../../stores/store';
+import LoadingComponent from '../../layout/LoadingComponent';
+import { LinkContainer } from 'react-router-bootstrap'
+import { Grid } from 'semantic-ui-react';
+import ActivityDetailedHeader from './ActivityDetailedHeader';
+import ActivityDetailedInfo from './ActivityDetailedInfo';
+import ActivityDetailedChat from './ActivityDetailedChat';
+import ActivityDetailedSidebar from './ActivityDetailedSidebar';
 
-interface Props {
-    activity: Activity;
-    cancelActivity: () => void;
-    changeEditMode: (isEditMode: boolean) => void;
-}
+const ActivityDetails = () => {
+    const { activityStore } = useStore();
+    const { id } = useParams<{id: string}>();
+    
+    useEffect(() => {
+        if (id)  activityStore.loadActivity(id);
+    }, [id, activityStore.loadActivity])
+    
+    const {selectedActivity : activity} = activityStore;
 
-const ActivityDetails = ({activity, cancelActivity, changeEditMode} : Props) => {
+    if (activityStore.loadingInitial || !activity) return <LoadingComponent />
+
     return (
-        <Card>
-        <Card.Img variant="top" src={`src/Assets/categoryimages/${activity.category}.jpg`} />
-        <Card.Body>
-            <Card.Title>{activity.title}</Card.Title>
-            <Card.Text>{activity.description}</Card.Text>
-            <Button onClick={() => changeEditMode(true)} variant="outline-primary" block>Edit</Button>
-            <Button onClick={cancelActivity} variant="outline-danger" block>Cancel</Button>
-        </Card.Body>
-        </Card>
+        <Grid>
+            <Grid.Column width={10}>
+                <ActivityDetailedHeader activity={activity}/>
+                <ActivityDetailedInfo activity={activity}/>
+                <ActivityDetailedChat />
+            </Grid.Column>
+            <Grid.Column width={6}>
+                <ActivityDetailedSidebar/>
+            </Grid.Column>
+        </Grid>
     )
 }
 
-export default ActivityDetails
+export default observer(ActivityDetails)

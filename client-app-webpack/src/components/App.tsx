@@ -1,63 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Container, ListGroup} from 'react-bootstrap';
-import { Activity } from '../models/Activity';
+import React from 'react';
+import { Container} from 'react-bootstrap';
 import NavBar from './layout/NavBar';
 import ActivityDashboard from './activites/dashboard/ActivityDashboard';
-import {v4 as uuid} from 'uuid';
+import { observer } from 'mobx-react-lite';
+import { Route, useLocation } from 'react-router';
+import HomePage from './homePage/HomePage';
+import ActivityForm from './activites/form/ActivityForm';
+import ActivityDetails from './activites/details/ActivityDetails';
 
 function App() {
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
-  const [editMode, setEditMode] = useState(false);
+  const location = useLocation();
 
-
-  useEffect(() => {
-    axios.get<Activity[]>("http://localhost:5000/api/activities").then(response =>{
-      setActivities(response.data);
-    });
-  }, [])
-
-  function handleSelectedActivity(id : string){
-      setSelectedActivity(activities.find(x => x.id === id));
-  }
-
-  function handleCancelActivity(){
-    setSelectedActivity(undefined);
-  }
-
-  function handleChangeEditMode(isEditMode : boolean){
-    setEditMode(isEditMode);
-  }
-
-  function createOrEditActivity(activity : Activity){
-    activity.id ?
-    setActivities([...activities.filter(x => x.id !== activity.id), activity]) :
-    setActivities([...activities, {...activity, id: uuid()}]);
-    setEditMode(false);
-    setSelectedActivity(undefined);
-  }
-
-  function deleteActivity(activity: Activity){
-    setActivities([...activities.filter(x => x.id !== activity.id)]);
-    setSelectedActivity(undefined);
-  }
 
   return (
     <div>
-      <NavBar changeEditMode={handleChangeEditMode}></NavBar>
-      <Container className="mt-5">
-        <ActivityDashboard activities={activities} 
-                  selectedActivity={selectedActivity}
-                  isEditMode={editMode}
-                   selectActivity={handleSelectedActivity}
-                   cancelActivity={handleCancelActivity}
-                   changeEditMode={handleChangeEditMode}
-                   createOrEditActivity={createOrEditActivity}
-                   deleteActivity={deleteActivity} />
-      </Container>
+        <Route exact path='/' component={HomePage}/>
+      <Route
+      path='/(.+)'
+      render={()=>
+        <>
+        <NavBar/>
+        <Container className="mt-5">
+          <Route exact path='/activities' component={ActivityDashboard}/>
+          <Route path='/activities/:id' component={ActivityDetails}/>
+          <Route key={location.key} path={['/createActivity', '/manageActivity/:id']} component={ActivityForm}/> 
+        </Container>
+        </>
+      }
+      />
     </div>
   );
 }
 
-export default App;
+export default observer(App);

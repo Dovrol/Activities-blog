@@ -1,38 +1,31 @@
-import React from 'react'
-import { Badge, Button, ButtonGroup, Card, CardDeck, Col, ListGroup } from 'react-bootstrap'
-import { Activity } from '../../../models/Activity'
+import { observer } from 'mobx-react-lite'
+import React, { Fragment } from 'react';
+import { Alert, Card, CardGroup } from 'react-bootstrap';
+import { Header, Item, Segment } from 'semantic-ui-react';
+import { Activity } from '../../../models/Activity';
+import { useStore } from '../../../stores/store';
+import ActivityListItem from './ActivityListItem';
 
-interface Props {
-    activities: Activity[];
-    selectActivity: (id: string) => void;
-    deleteActivity: (activity: Activity) => void;
-}
+const ActivityList = () => {
+    const { activityStore } = useStore();
 
-
-
-const ActivityList = ({ activities, selectActivity, deleteActivity }: Props) => {
     return (
         <>
-            {activities.map(activity => (
-                <CardDeck key={activity.id}>
-                    <Card className="my-2">
-                        <Card.Body>
-                            <Card.Title>{activity.title} <Badge variant="info mx-2">{activity.category}</Badge></Card.Title>
-                            <Card.Text>{activity.description}</Card.Text>
-                            <div className="d-flex justify-content-between">
-                                <Card.Text>{activity.venue} {activity.city}</Card.Text>
-                                <div>
-                                    <Button className="mr-3" variant="danger" onClick={()=> deleteActivity(activity)}>Delete</Button>
-                                    <Button onClick={()=> selectActivity(activity.id)}>View</Button>
-                                </div>
-                            </div>
-                        </Card.Body>
-                        <Card.Footer><small className="text-muted">{activity.date}</small> </Card.Footer>
-                    </Card>
-                </CardDeck>
+            {activityStore.activityDateGroup.map(([date, activities]) => (
+                <Fragment key={date}>
+                    {/* <Alert key={date} variant='success'>{date}</Alert> */}
+                    <Header>{date}</Header>
+                    {activities.map((activity, i) => (
+                        <Segment>
+                            <Item.Group>
+                                <ActivityListItem activity={activity} />
+                            </Item.Group>
+                        </Segment>
+                    ))}
+                </Fragment>
             ))}
         </>
     )
 }
 
-export default ActivityList
+export default observer(ActivityList)

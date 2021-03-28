@@ -6,7 +6,8 @@ module.exports = {
     entry: './src/index.tsx',
     output: {
         path: path.join(__dirname, '/dist'),
-        filename: 'index_bundle.js'
+        filename: 'index_bundle.js',
+        publicPath: '/'
     },
     module: {
         rules: [
@@ -20,13 +21,13 @@ module.exports = {
             use: ['style-loader', 'css-loader']
         },
         {
-            test: /\.tsx$/,
+            test: /\.(tsx|ts)$/,
             use: 'ts-loader',
             include: [path.resolve(__dirname, './src')],
             exclude: /node_modules/,
         },
         {
-            test: /\.(jpg|png)$/,
+            test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
             use: [
                 {
                 loader: 'file-loader',
@@ -42,6 +43,9 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
+    devServer: {
+        historyApiFallback: true,
+      },
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html'
