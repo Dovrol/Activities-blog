@@ -6,7 +6,7 @@ const HomePage = () => {
     return (
         <Container>
             <h1>Home page</h1>
-            <h2>Go to <Link to='/activities'>activities</Link></h2>
+            <h2>Go to <Link to='/login'>Login</Link></h2>
         </Container>
     )
 }

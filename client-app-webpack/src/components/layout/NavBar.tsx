@@ -26,7 +26,7 @@ export default function NavBar() {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav variant="pills">
                         <LinkContainer to='/activities'>
-                            <Nav.Link className="mx-2">Activities</Nav.Link>
+                            <Nav.Link className="mx-lg-2 my-1 my-lg-0 text-center">Activities</Nav.Link>
                         </LinkContainer>
                         <LinkContainer to='/createActivity'>
                             <Button variant="success">Add Activity</Button>

@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { Activity } from '../models/Activity';
+import { User, UserFormLogin } from '../models/user';
 
 axios.defaults.baseURL='http://localhost:5000/api';
 
@@ -27,7 +28,7 @@ const requests = {
     delete: <T>  (url: string) => axios.delete<T>(url).then(responseBody)
 };
 
-const Activities ={
+const Activities = {
     list : () => requests.get<Activity[]>('/Activities'),
     details : (id : string) => requests.get<Activity>(`/Activities/${id}`),
     create : (activity : Activity) => requests.post(`/Activities/`, activity),
@@ -35,8 +36,15 @@ const Activities ={
     delete : (activity : Activity) => requests.delete(`/Activities/${activity.id}`)
 }; 
 
+const Account = {
+    current : () => requests.get<User>('/account'),
+    login : (creds: UserFormLogin) => requests.post<User>('/account/login', creds),
+    register : (creds: UserFormLogin) => requests.post<User>('/account/register', creds)
+}
+
 const agent = {
-    Activities
+    Activities,
+    Account
 };
 
 

@@ -7,6 +7,7 @@ import { Route, useLocation } from 'react-router';
 import HomePage from './homePage/HomePage';
 import ActivityForm from './activites/form/ActivityForm';
 import ActivityDetails from './activites/details/ActivityDetails';
+import LoginForm from './users/LoginForm';
 
 function App() {
   const location = useLocation();
@@ -24,6 +25,7 @@ function App() {
           <Route exact path='/activities' component={ActivityDashboard}/>
           <Route path='/activities/:id' component={ActivityDetails}/>
           <Route key={location.key} path={['/createActivity', '/manageActivity/:id']} component={ActivityForm}/> 
+          <Route path='/login' component={LoginForm} /> 
         </Container>
         </>
       }

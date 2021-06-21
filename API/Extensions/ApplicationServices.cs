@@ -1,3 +1,4 @@
+using API.Middleware;
 using Application.Activites;
 using Application.Core;
 using MediatR;
@@ -29,6 +30,7 @@ namespace API.Extensions
             });
             services.AddMediatR(typeof(List).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+            services.AddScoped<ExceptionMiddleware>();
 
             return services;
         }
