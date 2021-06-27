@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container} from 'react-bootstrap';
 import NavBar from './layout/NavBar';
 import ActivityDashboard from './activites/dashboard/ActivityDashboard';
@@ -8,14 +8,29 @@ import HomePage from './homePage/HomePage';
 import ActivityForm from './activites/form/ActivityForm';
 import ActivityDetails from './activites/details/ActivityDetails';
 import LoginForm from './users/LoginForm';
+import { useStore } from '../stores/store';
+import LoadingComponent from './layout/LoadingComponent';
+import ModalComponent from './utils/modals/ModalComponent';
 
 function App() {
   const location = useLocation();
+  const {commonStore, accountStore} = useStore();
 
+  useEffect(() => {
+      if (commonStore.token)
+      {
+        accountStore.getUser().finally(() => commonStore.setAppLoaded());
+      } else {
+        commonStore.setAppLoaded();
+      }
+  }, [accountStore, commonStore]);
+
+  if (!commonStore.appLoaded) return <LoadingComponent />
 
   return (
-    <div>
-        <Route exact path='/' component={HomePage}/>
+    <>
+      <ModalComponent/>
+      <Route exact path='/' component={HomePage}/>
       <Route
       path='/(.+)'
       render={()=>
@@ -30,7 +45,7 @@ function App() {
         </>
       }
       />
-    </div>
+    </>
   );
 }
 

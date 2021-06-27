@@ -16,7 +16,7 @@ const ActivityList = () => {
                     {/* <Alert key={date} variant='success'>{date}</Alert> */}
                     <Header>{date}</Header>
                     {activities.map((activity, i) => (
-                        <Segment>
+                        <Segment key={i}>
                             <Item.Group>
                                 <ActivityListItem activity={activity} />
                             </Item.Group>

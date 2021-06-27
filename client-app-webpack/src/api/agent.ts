@@ -1,20 +1,36 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Activity } from '../models/Activity';
-import { User, UserFormLogin } from '../models/user';
+import { User, UserFormValues } from '../models/user';
+import { store } from '../stores/store';
 
 axios.defaults.baseURL='http://localhost:5000/api';
 
 
 const sleep = (delay : number) => new Promise((resolve) => setTimeout(resolve, delay))
 
+axios.interceptors.request.use(config => {
+    const token = store.commonStore.token;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config
+})
 axios.interceptors.response.use(async function(response) {
-    try {
-        await sleep(1000);
-        return response;
-    } catch (error) {
-        console.log(error);
-        return await Promise.reject(error);
+    await sleep(1000);
+    return response;
+}, (error: AxiosError) => {
+    const {data, status} = error.response!;
+    switch (status){
+        case 400:
+            if (data.errors){
+                const modalStateErrors = [];
+                for (const key in data.errors){
+                    if (data.errors[key])
+                        modalStateErrors.push(data.errors[key])
+                }
+                throw modalStateErrors.flat();
+            }
+        break;
     }
+    return Promise.reject(data.errors);
 })
 
 const responseBody = <T> (response: AxiosResponse<T>) => response.data;
@@ -38,8 +54,8 @@ const Activities = {
 
 const Account = {
     current : () => requests.get<User>('/account'),
-    login : (creds: UserFormLogin) => requests.post<User>('/account/login', creds),
-    register : (creds: UserFormLogin) => requests.post<User>('/account/register', creds)
+    login : (user: UserFormValues) => requests.post<User>('/account/login', user),
+    register : (user: UserFormValues) => requests.post<User>('/account/register', user)
 }
 
 const agent = {

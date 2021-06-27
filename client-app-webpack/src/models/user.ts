@@ -6,10 +6,10 @@ export interface User
     image?: string;
 }
 
-export interface UserFormLogin
+export interface UserFormValues
 {
     email: string;
     password: string;
-    username: string;
-    displayName: string;
+    displayName?: string;
+    username?: string;
 }

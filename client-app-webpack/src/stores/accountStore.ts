@@ -1,17 +1,66 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
+import { history } from "..";
 import agent from "../api/agent";
-import { UserFormLogin } from "../models/user";
+import { User, UserFormValues } from "../models/user";
+import { store } from "./store";
 
 export default class AccountStore
-{
+{ 
+    user: User | null = null;
+
     constructor() {
         makeAutoObservable(this)
     }
+    
+    get isLogggedIn(){
+        return !!this.user;
+    }
 
-    async login(creds: UserFormLogin)
+    login = async (creds: UserFormValues) =>
     {
-        let response = await agent.Account.login(creds);    
-        console.log(response);
+        try {
+            let user = await agent.Account.login(creds);
+            store.commonStore.setToken(user.token);
+            runInAction(() => this.user = user)    
+            history.push('/activities');
+            store.modalStore.closeModal();
+        } catch (error){
+            throw error;
+        }
+    }
+
+    register = async (creds: UserFormValues) =>
+    {
+        try {
+            let user = await agent.Account.register(creds);
+            store.commonStore.setToken(user.token);
+            runInAction(() => this.user = user)    
+            history.push('/activities');
+            store.modalStore.closeModal();
+        } catch (error){
+            console.log(error);
+            throw error;
+        }
+    }
+
+    logout = () =>
+    {
+        store.commonStore.setToken(null);
+        window.localStorage.removeItem('jwt');
+        this.user = null;
+        history.push('/');
+    }
+
+    getUser = async () =>
+    {
+        try
+        {
+            const user = await agent.Account.current();
+            runInAction(() => this.user = user);
+        } catch (error)
+        {
+            console.log(error);
+        }
     }
     
 }

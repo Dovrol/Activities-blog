@@ -17,17 +17,14 @@ const ActivityDashboard = () => {
       }, [activityRegistry, loadActivities]);
     
     if (activityStore.loadingInitial) {
-      return <LoadingComponent size="lg"/>
+      return <LoadingComponent content='Loading activities' size="lg"/>
     }
     
     return (
         <Container className="p-4  my-2">
             <Row>
-                <Col lg={8}>
+                <Col>
                     <ActivityList />
-                </Col>
-                <Col lg={4}>
-                   <h2>Activity filter</h2>
                 </Col>
             </Row>
         </Container>
