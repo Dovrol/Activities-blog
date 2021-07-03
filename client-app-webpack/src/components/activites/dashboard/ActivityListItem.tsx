@@ -20,8 +20,10 @@ const ActivityListItem = ({ activity }: Props) => {
 
     const { activityStore } = useStore();
 
-    function handleDeleteSubmit(event: any, activity: Activity) {
+    function handleDeleteSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, activity: Activity) {
         setTarget(event.currentTarget.name);
+        console.log("TEST:" + event.currentTarget.getAttribute('name'));
+        console.log(activity);
         activityStore.deleteActivity(activity);
     }
 
@@ -42,7 +44,7 @@ const ActivityListItem = ({ activity }: Props) => {
                     {/* <Item.Extra>Additional Details</Item.Extra> */}
 
                     <Button.Group floated='right'>
-                        <Button onClick={(e) => handleDeleteSubmit(e, activity)} 
+                        <Button onClick={(e) => handleDeleteSubmit(e, activity)} name={activity.id}
                             loading={activityStore.loading && target == activity.id} color='red'>Delete</Button>
                         <Button.Or />
                         <Button as={NavLink} to={`/activities/${activity.id}`} color='blue'>View</Button>

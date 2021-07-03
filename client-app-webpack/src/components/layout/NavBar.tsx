@@ -4,11 +4,10 @@ import { useStore } from '../../stores/store';
 import {LinkContainer} from 'react-router-bootstrap'
 import { Dropdown, Image, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import AccountStore from '../../stores/accountStore';
 
 export default function NavBar() {
-    const { accountStore: {user, logout} } = useStore();
-
-
+    const { accountStore: {user, logout, isLogggedIn} } = useStore();
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
             <Container className='justify-content-between'> 
@@ -37,6 +36,7 @@ export default function NavBar() {
                         </Nav>
                     </Navbar.Collapse>
                 </>
+                {isLogggedIn &&
                 <>
                     <Image avatar src={user?.image ||  'src/Assets/user.png'}/>
                     <Dropdown pointing='top left' text={user?.username} style={{color: 'white'}}>
@@ -46,6 +46,7 @@ export default function NavBar() {
                         </Dropdown.Menu>
                     </Dropdown>
                 </>
+                }
             </Container>
         </Navbar>
     )

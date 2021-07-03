@@ -92,6 +92,7 @@ export default class ActivityStore {
     }
 
     createActivity = async (activity: Activity) => {
+        this.setLoading(true);
         try {
             await agent.Activities.create(activity);
             runInAction(() => {

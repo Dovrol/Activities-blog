@@ -18,7 +18,7 @@ const ActivityList = () => {
                     {activities.map((activity, i) => (
                         <Segment key={i}>
                             <Item.Group>
-                                <ActivityListItem activity={activity} />
+                                <ActivityListItem activity={activity}/>
                             </Item.Group>
                         </Segment>
                     ))}

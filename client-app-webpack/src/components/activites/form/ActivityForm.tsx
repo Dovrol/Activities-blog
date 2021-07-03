@@ -1,12 +1,13 @@
 import { observer } from 'mobx-react-lite'
 import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react'
-import { Button, ButtonGroup, Card, Form, Spinner } from 'react-bootstrap'
+import {ButtonGroup, Card, Form, Spinner } from 'react-bootstrap'
 import { useHistory, useParams } from 'react-router-dom'
 import { useStore } from '../../../stores/store'
 import LoadingComponent from '../../layout/LoadingComponent'
 import {LinkContainer} from 'react-router-bootstrap'
 import { v4 as uuid } from 'uuid';
 import { Activity } from '../../../models/Activity'
+import { Button } from 'semantic-ui-react'
 
 
 const ActivityForm = () => {
@@ -72,8 +73,8 @@ const ActivityForm = () => {
                     <LinkContainer to={`/activities/${activity.id}`}>
                         <Button  className="float-left" variant="danger" type="submit">Cancel</Button>
                     </LinkContainer>
-                    <Button className="float-left" variant="success" type="submit">
-                        {activityStore.loading ? <LoadingComponent content="" size="sm"/> : "Submit"}
+                    <Button loading={activityStore.loading} className="float-left" positive type="submit">
+                        Submit
                     </Button>
                 </div>
             </Form>
